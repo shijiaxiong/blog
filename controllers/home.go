@@ -10,7 +10,7 @@ type HomeController struct {
 
 func (this *HomeController) Get() {
 
-	this.Data["Content"] = "value"
+	this.Data["PageTitle"] = "Home"
 	this.Layout = "layout/layout.tpl"
 	this.TplNames = "home/index.tpl"
 }

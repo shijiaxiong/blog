@@ -16,17 +16,17 @@
 </div>
 
 
-    <script type="text/javascript">
-    var i = {{.Time}}
-    var timer = null;
-    var redirecttime = document.getElementById('redirecttime');
-    var timer = setInterval(function(){
-        i--;
-        redirecttime.innerHTML = i;
-        if(i == 0)
-        {
-            location.href = "{{.Url}}";
-            clearInterval(timer);
-        }
-    },1000);
-    </script>
+<script type="text/javascript">
+var i = {{.Time}}
+var timer = null;
+var redirecttime = document.getElementById('redirecttime');
+var timer = setInterval(function(){
+    i--;
+    redirecttime.innerHTML = i;
+    if(i == 0)
+    {
+        location.href = "{{.Url}}";
+        clearInterval(timer);
+    }
+},1000);
+</script>
