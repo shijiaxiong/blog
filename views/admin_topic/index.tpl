@@ -4,8 +4,6 @@
 <div class="col-xs-12 col-sm-9" style="width: 80%">
     <div class="panel panel-default">
         <div class="panel-heading">
-
-            
             {{.PageTitle}} 
             <a href="/admintopic/add" class="btn btn-primary" role="button">Add</a>
         </div>
@@ -30,18 +28,18 @@
                  <tbody>
                     {{range .Topics}}
                      <tr>
-                         <td>{{.Id}}</td>
-                         <td>{{.Cid}}</td>
-                         <td>{{.Title}}</td>
-                         <td>{{.Content}}</td>
-                         <td>{{.Created}}</td>
-                         <td>{{.Updated}}</td>
-                         <td>{{.Views}}</td>
-                         <td>{{.Author}}</td>
-                         <td>{{.ReplyTime}}</td>
-                         <td>{{.ReplyCount}}</td>
-                         <td>{{.ReplyLastUserId}}</td>
-                         <td><a href="">Edit</a>　<a href="">Del</a></td>
+                         <td>{{.id}}</td>
+                         <td>{{.CateTitle}}</td>
+                         <td>{{.title}}</td>
+                         <td>{{.content}}</td>
+                         <td>{{.created}}</td>
+                         <td>{{.updated}}</td>
+                         <td>{{.views}}</td>
+                         <td>{{.author}}</td>
+                         <td>{{.reply_time}}</td>
+                         <td>{{.reply_count}}</td>
+                         <td>{{.reply_last_user_id}}</td>
+                         <td><a href="/admintopic/edit?id={{.id}}">Edit</a>　<a href="">Del</a></td>
                      </tr>
                      {{end}}
                  </tbody>

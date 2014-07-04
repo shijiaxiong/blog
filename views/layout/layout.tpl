@@ -39,9 +39,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Gray Blog</a>
+                <a class="navbar-brand" href="/">Gray Blog</a>
             </div>
-            <div class="collapse navbar-collapse">
+            <!-- <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active">
                         <a href="#">Home</a>
@@ -50,7 +50,7 @@
                         <a href="#about">Git</a>
                     </li>
                 </ul>
-            </div>
+            </div> -->
             <!-- /.nav-collapse --> </div>
         <!-- /.container --> </div>
     <!-- /.navbar -->

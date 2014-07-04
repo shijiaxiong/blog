@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"strconv"
@@ -44,8 +45,17 @@ type Topic struct {
 	ReplyLastUserId int64
 }
 
+type Reply struct {
+	Id        int64
+	Content   string `orm:"size(1000)"`
+	Tid       int64
+	Title     string
+	NickName  string
+	ReplyTime time.Time
+}
+
 func RegisterDB() {
-	orm.RegisterModel(new(Category), new(Topic))
+	orm.RegisterModel(new(Category), new(Topic), new(Reply))
 	orm.RegisterDriver(_DB_Driver, orm.DR_MySQL)
 	orm.RegisterDataBase(_DB_DEFAULT_DB, _DB_Driver, _DB_USER+":"+_DB_PASS+"@"+"/"+_DB_DBNAME+"?"+"charset="+_DB_CHARSET)
 }
@@ -126,14 +136,95 @@ func AddTopic(title, content, category string) error {
 	return nil
 }
 
-func GetAllTopic() ([]*Topic, error) {
+func GetAllTopic() ([]orm.Params, error) {
+
+	o := orm.NewOrm()
+	var maps []orm.Params
+
+	num, err := o.Raw("SELECT topic.*, category.title AS CateTitle FROM topic LEFT JOIN category ON (topic.cid = category.id)").Values(&maps)
+	fmt.Println(maps)
+	if err == nil && num > 0 {
+		return maps, err
+	}
+	return maps, err
+}
+
+func GetOneTopic(id string) (*Topic, error) {
+
+	cid, _ := strconv.ParseInt(id, 10, 64)
+	topic := &Topic{Id: cid}
+
+	o := orm.NewOrm()
+	qs := o.QueryTable("topic")
+	err := qs.Filter("id", cid).One(topic)
+
+	return topic, err
+}
+
+func UpdateTopic(id, title, content, category string) error {
+
+	o := orm.NewOrm()
+	num, err := o.QueryTable("topic").Filter("id", id).Update(orm.Params{"title": title, "content": content, "cid": category})
+
+	if num > 0 {
+		return nil
+	}
+
+	return err
+}
+
+func GetOneTopicAndCategory(id string) ([]orm.Params, error) {
+
+	o := orm.NewOrm()
+	var res []orm.Params
+
+	_, err := o.Raw("SELECT topic.*, category.title AS CateTitle FROM topic LEFT JOIN category ON (topic.cid = category.id) WHERE topic.id = ?", id).Values(&res)
+
+	return res, err
+}
+
+func AddReply(title, content, nickname, tid string) error {
+
+	intTid, err := strconv.ParseInt(tid, 10, 64)
+
+	if err != nil {
+		return err
+	}
+
 	o := orm.NewOrm()
 
-	topics := make([]*Topic, 0)
+	reply := &Reply{Title: title, Content: content, NickName: nickname, Tid: intTid, ReplyTime: time.Now()}
 
-	qs := o.QueryTable("topic")
+	_, err = o.Insert(reply)
 
-	_, err := qs.All(&topics)
+	if err != nil {
+		return err
+	}
 
-	return topics, err
+	return nil
+}
+
+func GetTopicReplyByTopicId(tid string) ([]orm.Params, error) {
+
+	o := orm.NewOrm()
+	var res []orm.Params
+
+	_, err := o.Raw("SELECT reply.* FROM reply WHERE reply.tid = ?", tid).Values(&res)
+
+	return res, err
+}
+
+func GetTopicByCategoryId(cid, id interface{}) ([]orm.Params, error) {
+
+	o := orm.NewOrm()
+	var res []orm.Params
+
+	var err error
+	if id == "" {
+		_, err = o.Raw("SELECT topic.* FROM topic WHERE topic.cid = ?", cid).Values(&res)
+	} else {
+		_, err = o.Raw("SELECT topic.* FROM topic WHERE topic.cid = ? AND id <> ?", cid, id).Values(&res)
+	}
+
+	return res, err
 }
